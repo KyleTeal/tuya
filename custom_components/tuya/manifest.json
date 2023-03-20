@@ -4,6 +4,7 @@
   "codeowners": ["@Tuya", "@zlinoliver", "@frenck"],
   "config_flow": true,
   "dependencies": ["ffmpeg"],
+  "version" : "1.0",
   "dhcp": [
     {
       "macaddress": "105A17*"
