@@ -200,7 +200,7 @@ class TuyaClimateEntity(TuyaEntity, ClimateEntity):
         # it to define min, max & step temperatures
         if self._set_temperature:
             self._attr_supported_features |= ClimateEntityFeature.TARGET_TEMPERATURE
-            self._attr_max_temp = self._set_temperature.max_scaled
+            self._attr_max_temp = (self._set_temperature.max_scaled - 32) / 1.8
             self._attr_min_temp = self._set_temperature.min_scaled
             self._attr_target_temperature_step = self._set_temperature.step_scaled
 
@@ -351,7 +351,7 @@ class TuyaClimateEntity(TuyaEntity, ClimateEntity):
                     "code": self._set_temperature.dpcode,
                     "value": round(
                         self._set_temperature.scale_value_back(kwargs["temperature"])
-                    ),
+                    )
                 }
             ]
         )
@@ -370,10 +370,9 @@ class TuyaClimateEntity(TuyaEntity, ClimateEntity):
             # The current temperature can have a scale of 0 or 1 and is used for
             # rounding, Home Assistant doesn't need to round but we will always
             # need to divide the value by 10^1 in case of 0 as scale.
-            # https://developer.tuya.com/en/docs/iot/shift-temperature-scale-follow-the-setting-of-app-account-center?id=Ka9qo7so58efq#title-7-Round%20values
+            # https://developer.tuya.com/en/docs/iot/shift-temperature-scale-follow-the-setting-of-app-account-center?id=Ka9
             temperature = temperature / 10
 
-        temperature = (temperature - 32) * 0.5556
 
         return self._current_temperature.scale_value(temperature)
 
@@ -395,9 +394,11 @@ class TuyaClimateEntity(TuyaEntity, ClimateEntity):
         if self._set_temperature is None:
             return None
 
-        temperature = self.device.status.get(self._set_temperature.dpcode)
+        temperature = self.device.status.get(self._set_temperature.dpcode) - 320
         if temperature is None:
             return None
+
+        temperature = temperature / 1.8
 
         return self._set_temperature.scale_value(temperature)
 
