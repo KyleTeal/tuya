@@ -351,7 +351,7 @@ class TuyaClimateEntity(TuyaEntity, ClimateEntity):
                     "code": self._set_temperature.dpcode,
                     "value": round(
                         self._set_temperature.scale_value_back(kwargs["temperature"])
-                    ),
+                    )
                 }
             ]
         )
